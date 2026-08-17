@@ -29,7 +29,7 @@ func (m Module) Writable() bool // IsMain || IsReplace
 
 | `Writable()` | Module kind | What tooling may do |
 |---|---|---|
-| `true` | main module, or local `replace` target | **generate files in `Dir`** (e.g. ormc writes `model_orm.go`; assetmin writes assets) |
+| `true` | main module, or local `replace` target | **generate files in `Dir`** (e.g. ormc writes `model_orm.go`; sitec writes assets) |
 | `false` | read-only module cache | **read `Dir` only** — never write |
 
 ## Classification (from `go list -m -json`, not from re-parsing `go.mod`)
@@ -68,7 +68,7 @@ nothing about `model.go`, `model_orm.go`, or assets.
   shipped wasm client), so `go list` never runs in a browser. (An earlier `//go:build !wasm` tag was
   removed: it made the package empty under wasm and broke every untagged importer's wasm build.)
 - **Minimal dependencies.** Stdlib + `github.com/tinywasm/fmt` only. `modfind` sits **below** `ssr`,
-  `assetmin`, `image`, and `ormc` in the graph and must never import `devflow`, `depfind`, or any
+  `sitec`, `image`, and `ormc` in the graph and must never import `devflow`, `depfind`, or any
   heavy package.
 - **One `go list`, cached.** `Discover` runs the command on first call per `rootDir`; subsequent calls
   hit the cache. `Refresh` invalidates (e.g. on a `go.mod` watcher event).
