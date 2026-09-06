@@ -1,17 +1,17 @@
 # modfind
 <img src="docs/img/badges.svg">
 
-Centralized Go module discovery + replace/cache classification for tinywasm tooling.
+Centralized Go module discovery + replace/cache classification for webtyp tooling.
 
 Runs `go list -m -json all` **once** per project root, caches it, and classifies each module as
 **writable** (main module or local `replace` → tooling may generate files there) or **read-only**
 (module cache → read only). Replaces the byte-identical `go list -m -json all` loops previously
 copy-pasted in `ssr`, `image/min`, and `imagemin`.
 
-Sibling to [`depfind`](https://github.com/tinywasm/depfind): `depfind` maps the **package import
+Sibling to [`depfind`](https://github.com/webtyp/depfind): `depfind` maps the **package import
 graph** ("which main to recompile"); `modfind` enumerates **modules** ("where each module lives, and
 may I write there"). Called only by tool-side code (compiles everywhere, no build tags); deps:
-stdlib + `tinywasm/fmt`.
+stdlib + `webtyp/fmt`.
 
 ## Usage
 

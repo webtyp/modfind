@@ -36,7 +36,7 @@ ssr/image/ormc would still need its own), and makes `app` more than a wirer.
 ## Why a dedicated lightweight package wins
 
 - One `go list` per session, shared by all consumers → the light/fast dev loop the tooling targets.
-- Stdlib + `tinywasm/fmt` only, so any mid-level library imports it cheaply, with honest dependency
+- Stdlib + `webtyp/fmt` only, so any mid-level library imports it cheaply, with honest dependency
   semantics.
 - `app` stays a pure orchestrator (constructs one finder, injects it).
 - Reusable across the ecosystem; `devflow` could later consume it to dedupe its own `go list` usage.

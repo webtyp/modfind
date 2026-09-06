@@ -1,4 +1,4 @@
-// Package modfind is the centralized Go module discovery primitive for tinywasm
+// Package modfind is the centralized Go module discovery primitive for webtyp
 // tooling. It runs `go list -m -json all` once per project root, caches the
 // parsed result, and classifies each module as writable (main module or local
 // replace — tooling may generate files there) or read-only (module cache).

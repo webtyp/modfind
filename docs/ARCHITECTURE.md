@@ -1,6 +1,6 @@
 # modfind — Architecture
 
-> **What.** `modfind` is the centralized Go module discovery primitive for tinywasm tooling. It runs
+> **What.** `modfind` is the centralized Go module discovery primitive for webtyp tooling. It runs
 > `go list -m -json all` **once** per project root, caches the parsed result, and classifies every
 > module as **writable** or **read-only** so a tool can decide whether it may generate files there.
 >
@@ -67,7 +67,7 @@ nothing about `model.go`, `model_orm.go`, or assets.
   checked under wasm keep building. `Discover` is only ever **called** by tool-side code (never by a
   shipped wasm client), so `go list` never runs in a browser. (An earlier `//go:build !wasm` tag was
   removed: it made the package empty under wasm and broke every untagged importer's wasm build.)
-- **Minimal dependencies.** Stdlib + `github.com/tinywasm/fmt` only. `modfind` sits **below** `ssr`,
+- **Minimal dependencies.** Stdlib + `webtyp.com/fmt` only. `modfind` sits **below** `ssr`,
   `sitec`, `image`, and `ormc` in the graph and must never import `devflow`, `depfind`, or any
   heavy package.
 - **One `go list`, cached.** `Discover` runs the command on first call per `rootDir`; subsequent calls
@@ -75,7 +75,7 @@ nothing about `model.go`, `model_orm.go`, or assets.
 
 ## Role in the ecosystem
 
-Sibling to [`depfind`](https://github.com/tinywasm/depfind): different axes of the Go build graph.
+Sibling to [`depfind`](https://github.com/webtyp/depfind): different axes of the Go build graph.
 
 | | `depfind` | `modfind` |
 |---|---|---|

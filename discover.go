@@ -6,7 +6,7 @@ import (
 	"os/exec"
 	"sync"
 
-	"github.com/tinywasm/fmt"
+	"webtyp.com/fmt"
 )
 
 // runner executes `go list -m -json all` in dir and returns raw stdout.

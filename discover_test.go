@@ -5,7 +5,7 @@ import "testing"
 // canned `go list -m -json all` output: a main module, a cache dep, a pruned
 // dep (no Dir), and a local replace.
 const cannedJSON = `{
-	"Path": "github.com/tinywasm/example",
+	"Path": "webtyp.com/example",
 	"Main": true,
 	"Dir": "/home/u/dev/example",
 	"GoVersion": "1.25.2"
@@ -53,7 +53,7 @@ func TestDiscoverClassification(t *testing.T) {
 		by[m.Path] = m
 	}
 
-	main := by["github.com/tinywasm/example"]
+	main := by["webtyp.com/example"]
 	if !main.IsMain || !main.Writable() {
 		t.Errorf("main module not classified writable: %+v", main)
 	}
