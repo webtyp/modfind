@@ -2,8 +2,9 @@
 PLAN: "feat: local checkouts and workspace root"
 EXECUTOR: jules
 REVIEWER: none
-STATUS: running
+STATUS: review
 SESSION: 3213219086017174894
+PR: https://github.com/webtyp/modfind/pull/1
 ---
 
 > This plan is dispatched via the CodeJob workflow. See skill: agents-workflow.
