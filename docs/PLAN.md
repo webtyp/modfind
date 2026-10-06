@@ -2,6 +2,8 @@
 PLAN: "feat: local checkouts and workspace root"
 EXECUTOR: jules
 REVIEWER: none
+STATUS: running
+SESSION: 3213219086017174894
 ---
 
 > This plan is dispatched via the CodeJob workflow. See skill: agents-workflow.
