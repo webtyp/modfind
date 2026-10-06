@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"os/exec"
+	"strings"
 	"sync"
 
 	"webtyp.com/fmt"
@@ -68,8 +69,69 @@ func (f *Finder) Discover(rootDir string) ([]Module, error) {
 		return nil, fmt.Err("modfind: parsing go list output:", err)
 	}
 
+	fillLocalDirs(rootDir, mods, f.log)
+
 	f.cache[rootDir] = mods
 	return mods, nil
+}
+
+func fillLocalDirs(rootDir string, mods []Module, log func(...any)) {
+	root := WorkspaceRoot(rootDir)
+	if root == "" {
+		// leave LocalDir empty for all
+		for i := range mods {
+			if mods[i].IsMain || mods[i].IsReplace {
+				mods[i].LocalDir = mods[i].Dir
+			}
+		}
+		return
+	}
+
+	wsMods, err := WorkspaceModules(root)
+	if err != nil {
+		log("modfind: workspace walk failed in", root, ":", err)
+		for i := range mods {
+			if mods[i].IsMain || mods[i].IsReplace {
+				mods[i].LocalDir = mods[i].Dir
+			}
+		}
+		return
+	}
+
+	wsByPath := make(map[string][]string)
+	for _, m := range wsMods {
+		wsByPath[m.Path] = append(wsByPath[m.Path], m.Dir)
+	}
+
+	for i := range mods {
+		if mods[i].IsMain || mods[i].IsReplace {
+			mods[i].LocalDir = mods[i].Dir
+			continue
+		}
+
+		dirs := wsByPath[mods[i].Path]
+		if len(dirs) == 1 {
+			mods[i].LocalDir = dirs[0]
+		} else if len(dirs) > 1 {
+			// take the one with the fewest path separators
+			minSeps := -1
+			var best []string
+			for _, d := range dirs {
+				seps := strings.Count(d, "/") + strings.Count(d, "\\")
+				if minSeps == -1 || seps < minSeps {
+					minSeps = seps
+					best = []string{d}
+				} else if seps == minSeps {
+					best = append(best, d)
+				}
+			}
+			if len(best) == 1 {
+				mods[i].LocalDir = best[0]
+			} else {
+				log("modfind: ambiguous local checkout for ", mods[i].Path, ": ", best[0], ", ", best[1])
+			}
+		}
+	}
 }
 
 // Refresh invalidates the cache for rootDir (call after a go.mod change).

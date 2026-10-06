@@ -42,6 +42,20 @@ Each streamed JSON record maps to a `Module`:
   *version* stays read-only.
 - Empty `Dir` (not downloaded / pruned) → the record is **skipped** (nothing on disk to scan).
 
+## Local checkout resolution
+
+`Finder.Discover` fills `Module.LocalDir` to tell tools where the developer edits a dependency:
+
+1. **Main or Replace:** `LocalDir` is exactly `Dir`.
+2. **Dependencies:** `modfind` climbs up from `rootDir` to find a `*.code-workspace` file. If none
+   is found, `LocalDir` is empty.
+3. If a workspace is found, it walks all `go.mod` files under the workspace root to find local
+   checkouts.
+   - If exactly one local checkout declares the dependency's `Path`, `LocalDir` becomes that directory.
+   - If multiple local checkouts declare the same `Path`, the shallowest one (fewest path separators)
+     wins.
+   - If there is a tie at the shallowest depth, `LocalDir` remains empty and a warning is logged.
+
 ## The finder
 
 ```go

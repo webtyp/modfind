@@ -31,8 +31,35 @@ dirs, _ := f.Dirs(rootDir) // []string convenience (drop-in for old []dir loops)
 f.Refresh(rootDir)         // invalidate after a go.mod change
 ```
 
+## Inject the contract, not the Finder
+
+Consumers take a `modfind.Discoverer`; the composition root builds the `*Finder`; tests pass a fake.
+
+```go
+type AssetGenerator struct {
+    Finder modfind.Discoverer
+}
+```
+
 In a tool with several consumers (assets + schema), construct **one** `*modfind.Finder` and inject it
 into each (ssr, image, ormc) so `go list` runs a single time per session.
+
+## Local checkouts
+
+In this ecosystem, the developer checks out many repositories under a single `*.code-workspace` root.
+To find where a developer *edits* a dependency (which may not be `m.Dir`, since that is often the
+read-only cache):
+
+```go
+// m.SourceDir() returns the local checkout if one exists, else m.Dir
+src := m.SourceDir()
+```
+
+You can also search the workspace directly:
+```go
+root := modfind.WorkspaceRoot(dir)
+allMods, err := modfind.WorkspaceModules(root)
+```
 
 ## Module
 
@@ -44,6 +71,7 @@ into each (ssr, image, ormc) so `go list` runs a single time per session.
 | `IsMain` | the project's root module |
 | `IsReplace` | satisfied by a local filesystem `replace` (writable) |
 | `Indirect` | transitive dependency |
+| `LocalDir` | the developer's local checkout of this module (if found under the workspace root) |
 | `Writable()` | `IsMain || IsReplace` |
 
 ## Docs
