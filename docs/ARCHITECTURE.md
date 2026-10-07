@@ -64,9 +64,6 @@ type Finder struct { /* rootDir → []Module cache, mutex, injectable runner */ 
 func New() *Finder
 func (f *Finder) SetLog(fn func(...any))
 func (f *Finder) Discover(rootDir string) ([]Module, error) // go list once, then cached
-func (f *Finder) Dirs(rootDir string) ([]string, error)     // convenience: just the dirs
-func (f *Finder) Refresh(rootDir string)                    // invalidate after a go.mod change
-func (f *Finder) Seed(rootDir string, mods []Module)        // test seam: preload, bypass go list
 ```
 
 In a tool with several consumers (assets + schema), construct **one** `*Finder` and inject it into
@@ -85,7 +82,7 @@ nothing about `model.go`, `model_orm.go`, or assets.
   `sitec`, `image`, and `ormc` in the graph and must never import `devflow`, `depfind`, or any
   heavy package.
 - **One `go list`, cached.** `Discover` runs the command on first call per `rootDir`; subsequent calls
-  hit the cache. `Refresh` invalidates (e.g. on a `go.mod` watcher event).
+  hit the cache for the life of the `*Finder`.
 
 ## Role in the ecosystem
 

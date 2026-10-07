@@ -134,36 +134,6 @@ func fillLocalDirs(rootDir string, mods []Module, log func(...any)) {
 	}
 }
 
-// Refresh invalidates the cache for rootDir (call after a go.mod change).
-func (f *Finder) Refresh(rootDir string) {
-	f.mu.Lock()
-	defer f.mu.Unlock()
-	delete(f.cache, rootDir)
-}
-
-// Seed pre-populates the cache for rootDir, bypassing `go list`. It is the
-// cross-package test seam: a consumer's tests inject a fixed module set without
-// a real toolchain round-trip. A subsequent Discover(rootDir) returns mods.
-func (f *Finder) Seed(rootDir string, mods []Module) {
-	f.mu.Lock()
-	defer f.mu.Unlock()
-	f.cache[rootDir] = mods
-}
-
-// Dirs returns just the Dir of every discovered module — the []string shape
-// ssr/image/imagemin previously produced. Order matches Discover.
-func (f *Finder) Dirs(rootDir string) ([]string, error) {
-	mods, err := f.Discover(rootDir)
-	if err != nil {
-		return nil, err
-	}
-	dirs := make([]string, 0, len(mods))
-	for _, m := range mods {
-		dirs = append(dirs, m.Dir)
-	}
-	return dirs, nil
-}
-
 // listEntry mirrors the relevant fields of `go list -m -json` records.
 type listEntry struct {
 	Path     string

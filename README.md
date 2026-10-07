@@ -26,9 +26,6 @@ for _, m := range mods {
         // read-only cache → only read m.Dir
     }
 }
-
-dirs, _ := f.Dirs(rootDir) // []string convenience (drop-in for old []dir loops)
-f.Refresh(rootDir)         // invalidate after a go.mod change
 ```
 
 ## Inject the contract, not the Finder
